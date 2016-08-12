@@ -1,0 +1,71 @@
+From 2a3e0bfd76bd3bd909b19369f44becb525a1efb4 Mon Sep 17 00:00:00 2001
+From: Max Taldykin <jorpic@gmail.com>
+Date: Sat, 13 Aug 2016 00:53:02 +0300
+Subject: [PATCH] patch
+
+---
+ lib/buffer.h     | 2 +-
+ lib/debug.cpp    | 5 +++++
+ lib/ref_vector.h | 6 +++---
+ 3 files changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/lib/buffer.h b/lib/buffer.h
+index d3d85db..1467e64 100644
+--- a/lib/buffer.h
++++ b/lib/buffer.h
+@@ -240,7 +240,7 @@ class ptr_buffer : public buffer<T *, false, INITIAL_SIZE> {
+ public:
+     void append(unsigned n, T * const * elems) {
+         for (unsigned i = 0; i < n; i++) {
+-            push_back(elems[i]);
++            this->push_back(elems[i]);
+         }
+     }
+ };
+diff --git a/lib/debug.cpp b/lib/debug.cpp
+index bb4d397..1859334 100644
+--- a/lib/debug.cpp
++++ b/lib/debug.cpp
+@@ -16,6 +16,11 @@ Author:
+ Revision History:
+ 
+ --*/
++#ifndef _WINDOWS
++#include<sys/types.h>
++#include<unistd.h>
++#endif
++
+ #include<cstdio>
+ #include<iostream>
+ #include"str_hashtable.h"
+diff --git a/lib/ref_vector.h b/lib/ref_vector.h
+index 155c032..f2ceb76 100644
+--- a/lib/ref_vector.h
++++ b/lib/ref_vector.h
+@@ -198,12 +198,12 @@ public:
+     
+     ref_vector(ref_vector const & other): 
+         super(ref_manager_wrapper<T, TManager>(other.m_manager)) {
+-        append(other);
++        this->append(other);
+     }
+ 
+     ref_vector(TManager & m, unsigned sz, T * const * data):
+         super(ref_manager_wrapper<T, TManager>(m)) {
+-        append(sz, data);
++        this->append(sz, data);
+     }
+     
+     TManager & get_manager() const {
+@@ -271,7 +271,7 @@ public:
+     ref_vector & set(ref_vector const& other) {
+         if (this != &other) {
+             this->reset();
+-            append(other);
++            this->append(other);
+         }
+         return *this;
+     }
+-- 
+2.7.4
+
